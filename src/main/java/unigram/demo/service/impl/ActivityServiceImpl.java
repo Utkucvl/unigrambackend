@@ -10,6 +10,7 @@ import unigram.demo.service.ActivityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,6 +47,21 @@ public class ActivityServiceImpl implements ActivityService {
         dto.setPlace(activity.getPlace());
         dto.setDate(activity.getDate());
         return dto;
+    }
+    @Override
+    public List<ActivityDto> getPastActivities() {
+        LocalDate today = LocalDate.now();
+
+        // Tüm aktiviteleri al
+        List<Activity> allActivities = activityRepository.findAll();
+
+        // Bugünün tarihinden önceki aktiviteleri filtrele
+        List<Activity> pastActivities = allActivities.stream()
+                .filter(activity -> activity.getDate().isBefore(today))
+                .collect(Collectors.toList());
+
+        // Dto'ya dönüştür ve listeyi döndür
+        return activitiesToDtoList(pastActivities);
     }
 
     @Override

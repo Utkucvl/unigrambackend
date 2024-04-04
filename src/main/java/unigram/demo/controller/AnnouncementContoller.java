@@ -1,5 +1,6 @@
 package unigram.demo.controller;
 
+import org.springframework.web.bind.annotation.*;
 import unigram.demo.dto.AnnouncementDto;
 import unigram.demo.dto.ClubDto;
 import unigram.demo.repository.AnnouncementRepository;
@@ -9,11 +10,8 @@ import unigram.demo.service.impl.ClubServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,4 +41,47 @@ public class AnnouncementContoller {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); //return 404, with null body
         }
     }
+    @PostMapping
+    public ResponseEntity<?> createAnnouncement(@RequestBody AnnouncementDto announcementDto) {
+        try {
+            AnnouncementDto newAnnouncementDto = announcementServiceImpl.save(announcementDto);
+
+            return ResponseEntity.created(new URI("activity/"+newAnnouncementDto.getId())).body(newAnnouncementDto);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+    }
+
+    @PutMapping("/{announcementId}")
+    public ResponseEntity<AnnouncementDto> updateAnnouncement(@PathVariable(value = "announcementId", required = true) Long announcementId,
+                                                              @RequestBody AnnouncementDto announcementDto) {
+        try {
+            announcementServiceImpl.update(announcementId, announcementDto);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+
+    }
+
+    @DeleteMapping("/{announcementId}")
+    public ResponseEntity<?> delete(@PathVariable(value = "announcementId", required = true) Long announcementId) {
+        try {
+            if(announcementId!=null)
+            {
+
+                announcementServiceImpl.delete(announcementId);
+                return ResponseEntity.noContent().build();
+            }
+            else
+            {
+                return ResponseEntity.badRequest().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+
+    }
+
 }

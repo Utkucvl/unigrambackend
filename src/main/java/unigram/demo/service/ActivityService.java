@@ -12,6 +12,8 @@ public interface ActivityService {
 
     List<ActivityDto> getActivities();
 
+    List<ActivityDto> getPastActivities();
+
     Boolean delete(Long id);
 
     ActivityDto update(Long id, ActivityEditDto activityDto);

@@ -28,6 +28,13 @@ public class ActivityController {
         return ResponseEntity.ok(data);
     }
 
+    @GetMapping("/past")
+    public ResponseEntity<List<ActivityDto>> getAllPastActivites() {
+        List<ActivityDto> data= new ArrayList<>();
+        data = activityServiceImpl.getPastActivities();
+        return ResponseEntity.ok(data);
+    }
+
 
     @GetMapping("/{activityid}")
     public ResponseEntity<ActivityDto> getById(@PathVariable(value = "activityid", required = true) Long activityid) {

@@ -9,6 +9,7 @@ import lombok.Data;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -27,7 +28,7 @@ public class Activity {
 
     @Column(name="Date")
     @Temporal(TemporalType.DATE) // Specify the temporal type
-    Date date;
+    LocalDate date;
 
     @Column(name = "Content")
     String Content;
