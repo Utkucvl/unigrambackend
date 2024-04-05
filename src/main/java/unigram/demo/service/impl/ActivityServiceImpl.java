@@ -1,11 +1,15 @@
 package unigram.demo.service.impl;
 
+import org.checkerframework.checker.units.qual.A;
 import unigram.demo.dao.entity.Activity;
 import unigram.demo.dao.entity.Club;
+import unigram.demo.dao.entity.User;
 import unigram.demo.dto.ActivityDto;
 import unigram.demo.dto.ActivityEditDto;
+import unigram.demo.dto.ClubDto;
 import unigram.demo.repository.ActivityRepository;
 import unigram.demo.repository.ClubRepository;
+import unigram.demo.repository.UserRepository;
 import unigram.demo.service.ActivityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,6 +27,9 @@ public class ActivityServiceImpl implements ActivityService {
 
     @Autowired
     private ClubRepository clubRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
 
 
@@ -35,6 +43,7 @@ public class ActivityServiceImpl implements ActivityService {
         activity.setPlace(activityDto.getPlace());
         activity.setDate(activityDto.getDate());
         activity.setClub(club);
+        activity.setUsersId(new ArrayList<>());
         activity.setPhotoUrl(activityDto.getPhotoUrl());
         activity= activityRepository.save(activity);
         activityDto.setId(activity.getId());
@@ -46,6 +55,7 @@ public class ActivityServiceImpl implements ActivityService {
         dto.setContent(activity.getContent());
         dto.setPlace(activity.getPlace());
         dto.setDate(activity.getDate());
+        dto.setUsersId(new ArrayList<>());
         return dto;
     }
 
@@ -63,6 +73,7 @@ public class ActivityServiceImpl implements ActivityService {
         dto.setName(n.getName());
         dto.setClubName(clubName);
         dto.setId(n.getId());
+        dto.setUsersId(n.getUsersId());
         return dto;
     }
 
@@ -104,7 +115,7 @@ public class ActivityServiceImpl implements ActivityService {
         if (activityDb == null)
             throw new IllegalArgumentException("Activity Does Not Exist ID:" + id);
 
-        Club clubDb= clubRepository.getOne(activityDto.getClubid());
+        Club clubDb = clubRepository.getOne(activityDto.getClubid());
         if (clubDb == null)
             throw new IllegalArgumentException("Club Does Not Exist ID:" + id);
 
@@ -115,7 +126,7 @@ public class ActivityServiceImpl implements ActivityService {
         activityDb.setClub(clubDb);
         activityDb.setPhotoUrl(activityDto.getPhotoUrl());
         Activity n = activityRepository.save(activityDb);
-        addClubActivities((long)n.getClub().getId(),n);
+        addClubActivities((long) n.getClub().getId(), n);
         ActivityDto dto = new ActivityDto();
         dto.setId(activityDb.getId());
         dto.setClub(activityDb.getClub());
@@ -126,16 +137,6 @@ public class ActivityServiceImpl implements ActivityService {
         dto.setPhotoUrl(activityDb.getPhotoUrl());
         return dto;
     }
-    @Override
-    public List<ActivityDto> findByClubid(Long id) {
-        Club club = clubRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Club Does Not Exist ID:" + id));
-
-        List<Activity> activities = activityRepository.findByClubId(id);
-
-        return activities.stream().map((activity) -> activityToDtoList(activity))
-                .collect(Collectors.toList());
-    }
     private void addClubActivities(Long clubid,Activity activity){
         Club t = clubRepository.getReferenceById(clubid);
         List<Activity> activityList = t.getActivities();
@@ -143,7 +144,79 @@ public class ActivityServiceImpl implements ActivityService {
         clubRepository.save(t);
     }
 
-    public List<ActivityDto> activitiesToDtoList(List<Activity> activities) {
+
+    @Override
+    public ActivityDto addUserToActivity(Long userId , Long activityId) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (!optionalUser.isPresent()) {
+            // Kullanıcı bulunamadı, hata fırlat veya uygun bir işlem yap
+            // Burada bir hata fırlatmak yerine uygun bir işlem yapabilirsiniz.
+            // Örneğin, uygun bir hata durumu oluşturabilir ve bu hata durumunu döndürebilirsiniz.
+            throw new IllegalArgumentException("Kullanıcı bulunamadı: " + userId);
+        }
+        Activity activity = activityRepository.getReferenceById(activityId);
+        activity.getUsersId().add(userId);
+        Activity d = activityRepository.save(activity);
+        ActivityDto activityDto = new ActivityDto();
+        activityDto.setName(d.getName());
+        activityDto.setId(d.getId());
+        activityDto.setClub(d.getClub());
+        activityDto.setContent(d.getContent());
+        activityDto.setUsersId(d.getUsersId());
+        activityDto.setDate(d.getDate());
+        activityDto.setPlace(d.getPlace());
+        activityDto.setPhotoUrl(d.getPhotoUrl());
+        return activityDto;
+    }
+
+
+    @Override
+    public ActivityDto removeUserFromActivity(Long userId , Long activityId){
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (!optionalUser.isPresent()) {
+            // Kullanıcı bulunamadı, hata fırlat veya uygun bir işlem yap
+            // Burada bir hata fırlatmak yerine uygun bir işlem yapabilirsiniz.
+            // Örneğin, uygun bir hata durumu oluşturabilir ve bu hata durumunu döndürebilirsiniz.
+            throw new IllegalArgumentException("Kullanıcı bulunamadı: " + userId);
+        }
+        Activity activity = activityRepository.getReferenceById(activityId);
+        activity.getUsersId().remove(userId);
+        Activity d = activityRepository.save(activity);
+        ActivityDto activityDto = new ActivityDto();
+        activityDto.setName(d.getName());
+        activityDto.setId(d.getId());
+        activityDto.setClub(d.getClub());
+        activityDto.setContent(d.getContent());
+        activityDto.setUsersId(d.getUsersId());
+        activityDto.setDate(d.getDate());
+        activityDto.setPlace(d.getPlace());
+        activityDto.setPhotoUrl(d.getPhotoUrl());
+        return activityDto;
+
+    }
+
+    @Override
+    public List<ActivityDto> getFiltered(Long userId) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (!optionalUser.isPresent()) {
+            // Kullanıcı bulunamadı, hata fırlat veya uygun bir işlem yap
+            // Burada bir hata fırlatmak yerine uygun bir işlem yapabilirsiniz.
+            // Örneğin, uygun bir hata durumu oluşturabilir ve bu hata durumunu döndürebilirsiniz.
+            throw new IllegalArgumentException("Kullanıcı bulunamadı: " + userId);
+        }
+        List<Activity> data = activityRepository.findAll();
+
+        List<Activity> filtered = data.stream()
+                .filter(activity -> activity.getUsersId().contains(userId))
+                .collect(Collectors.toList());
+
+
+        List<ActivityDto> activityDtos = activitiesToDtoList(filtered);
+
+        return activityDtos;
+    }
+
+        public List<ActivityDto> activitiesToDtoList(List<Activity> activities) {
         List<ActivityDto> dtos = new ArrayList<>();
 
         for (Activity activity : activities) {
@@ -157,6 +230,7 @@ public class ActivityServiceImpl implements ActivityService {
             dto.setContent(activity.getContent());
             dto.setClub(activity.getClub());
             dto.setClubName(clubName);
+            dto.setUsersId(activity.getUsersId());
             dtos.add(dto);
         }
 
@@ -172,7 +246,7 @@ public class ActivityServiceImpl implements ActivityService {
         dto.setPhotoUrl(activity.getPhotoUrl());
         dto.setContent(activity.getContent());
         dto.setClub(activity.getClub());
-
+        dto.setUsersId(activity.getUsersId());
         return dto;
 
     }

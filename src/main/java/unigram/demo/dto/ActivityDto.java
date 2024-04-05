@@ -24,4 +24,5 @@ public class ActivityDto {
     @JsonIdentityReference(alwaysAsId=true)
     @JsonProperty("clubid")
     private Club club;
+    private List<Long> usersId;
 }

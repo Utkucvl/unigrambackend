@@ -1,7 +1,6 @@
 package unigram.demo.controller;
 
-import unigram.demo.dto.ActivityDto;
-import unigram.demo.dto.ActivityEditDto;
+import unigram.demo.dto.*;
 import unigram.demo.repository.ActivityRepository;
 import unigram.demo.service.impl.ActivityServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,6 +86,50 @@ public class ActivityController {
             return ResponseEntity.notFound().build();
         }
 
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<?> addUserToActivity(@RequestBody UserActivityDto userActivityDto) {
+        try {
+            if(userActivityDto.getActivityId()!=null || userActivityDto.getUserId() != null)
+            {
+
+                activityServiceImpl.addUserToActivity(userActivityDto.getUserId(), userActivityDto.getActivityId());
+                return ResponseEntity.noContent().build();
+            }
+            else
+            {
+                return ResponseEntity.badRequest().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+
+    }
+    @PostMapping("/remove")
+    public ResponseEntity<?> removeUserFromActivity(@RequestBody UserActivityDto userActivityDto) {
+        try {
+            if(userActivityDto.getActivityId()!=null || userActivityDto.getUserId() != null)
+            {
+
+                activityServiceImpl.removeUserFromActivity(userActivityDto.getUserId(), userActivityDto.getActivityId());
+                return ResponseEntity.noContent().build();
+            }
+            else
+            {
+                return ResponseEntity.badRequest().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+
+    }
+    @GetMapping("/filter/{userid}")
+    public ResponseEntity<List<ActivityDto>> getAllByUserId(@PathVariable(value = "userid", required = true) Long userid) {
+        List<ActivityDto> data= new ArrayList<>();
+        if(userid != null)
+        data = activityServiceImpl.getFiltered(userid);
+        return ResponseEntity.ok(data);
     }
 
 }

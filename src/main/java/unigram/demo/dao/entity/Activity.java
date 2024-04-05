@@ -11,6 +11,7 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name="Activities")
@@ -40,6 +41,11 @@ public class Activity {
     @JsonIdentityReference(alwaysAsId=true)
     @JsonProperty("clubid")
     private Club club;
+
+    @ElementCollection
+    @Column(name = "usersId")
+    List<Long> usersId;
+
 
     String photoUrl;
 

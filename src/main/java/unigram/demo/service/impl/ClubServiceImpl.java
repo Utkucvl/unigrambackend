@@ -77,7 +77,6 @@ public class ClubServiceImpl implements ClubService {
     @Override
     public ClubDto update(Long id, ClubDto clubDto) {
         Club clubdb = clubRepository.getOne(id);
-        User user = userRepository.findByUserName("utku");
         if (clubdb == null)
             throw new IllegalArgumentException("Testplan Does Not Exist ID:" + id);
         clubdb.setName(clubDto.getName());
