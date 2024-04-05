@@ -48,21 +48,7 @@ public class ActivityServiceImpl implements ActivityService {
         dto.setDate(activity.getDate());
         return dto;
     }
-    @Override
-    public List<ActivityDto> getPastActivities() {
-        LocalDate today = LocalDate.now();
 
-        // Tüm aktiviteleri al
-        List<Activity> allActivities = activityRepository.findAll();
-
-        // Bugünün tarihinden önceki aktiviteleri filtrele
-        List<Activity> pastActivities = allActivities.stream()
-                .filter(activity -> activity.getDate().isBefore(today))
-                .collect(Collectors.toList());
-
-        // Dto'ya dönüştür ve listeyi döndür
-        return activitiesToDtoList(pastActivities);
-    }
 
     @Override
     public ActivityDto getById(Long id) {
@@ -81,9 +67,29 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
+    public List<ActivityDto> getPastActivities() {
+        LocalDate today = LocalDate.now();
+
+        // Tüm aktiviteleri al
+        List<Activity> allActivities = activityRepository.findAll();
+
+        // Bugünün tarihinden önceki aktiviteleri filtrele
+        List<Activity> pastActivities = allActivities.stream()
+                .filter(activity -> activity.getDate().isBefore(today))
+                .collect(Collectors.toList());
+
+        // Dto'ya dönüştür ve listeyi döndür
+        return activitiesToDtoList(pastActivities);
+    }
+
+    @Override
     public List<ActivityDto> getActivities() {
+        LocalDate today = LocalDate.now();
         List<Activity> data = activityRepository.findAll();
-        return activitiesToDtoList(data);
+        List<Activity> availableActivities = data.stream()
+                .filter(activity -> activity.getDate().isAfter(today) || activity.getDate().isEqual(today))
+                .collect(Collectors.toList());
+        return activitiesToDtoList(availableActivities);
     }
 
     @Override
