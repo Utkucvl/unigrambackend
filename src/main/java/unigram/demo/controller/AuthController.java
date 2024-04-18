@@ -51,6 +51,7 @@ public class AuthController {
         authResponse.setMessage(message);
         authResponse.setUserId(user.getId());
         authResponse.setAccessToken(accessToken);
+        authResponse.setRole(user.getRole());
         return new ResponseEntity<>(authResponse, HttpStatus.OK);
     }
     @PostMapping("/register")
@@ -67,6 +68,7 @@ public class AuthController {
         User user = new User();
         user.setUserName(userRequest.getUserName());
         user.setPassword(userRequest.getPassword());
+        user.setRole("USER");
         userService.createOneUser(user);
         message = "User successfully has been created";
         AuthDto authResponse = new AuthDto();
