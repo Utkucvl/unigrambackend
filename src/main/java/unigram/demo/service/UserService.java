@@ -1,11 +1,13 @@
 package unigram.demo.service;
 import unigram.demo.dao.entity.Club;
 import unigram.demo.dao.entity.User;
+import unigram.demo.dto.UserDtoWithName;
 import unigram.demo.repository.ClubRepository;
 import unigram.demo.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -19,8 +21,16 @@ public class UserService {
         this.clubRepository = clubRepository;
     }
 
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<UserDtoWithName> getAllUsers() {
+        List<User> users = userRepository.findAll();
+        return users.stream()
+                .map(user -> {
+                    UserDtoWithName userDtoWithName = new UserDtoWithName();
+                    userDtoWithName.setId(user.getId());
+                    userDtoWithName.setUserName(user.getUserName());
+                    return userDtoWithName;
+                })
+                .collect(Collectors.toList());
     }
 
     public User findById(Long userId) {

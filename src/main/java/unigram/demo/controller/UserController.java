@@ -5,6 +5,7 @@ import unigram.demo.dao.entity.User;
 import unigram.demo.dto.ClubDto;
 import unigram.demo.dto.UserClubDto;
 import unigram.demo.dto.UserDto;
+import unigram.demo.dto.UserDtoWithName;
 import unigram.demo.repository.ClubRepository;
 import unigram.demo.service.ClubService;
 import unigram.demo.service.UserService;
@@ -13,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -34,6 +36,12 @@ public class UserController {
         userDto.setId(user.getId());
        // userDto.setClubs(user.getClubs());
         return new ResponseEntity<>(userDto, HttpStatus.OK);
+    }
+    @GetMapping()
+    public ResponseEntity<List<UserDtoWithName>> getAll() {
+        List<UserDtoWithName> data= new ArrayList<>();
+        data = userService.getAllUsers();
+        return ResponseEntity.ok(data);
     }
 
 }
