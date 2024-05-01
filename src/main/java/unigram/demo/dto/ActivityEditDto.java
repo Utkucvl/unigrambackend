@@ -21,4 +21,5 @@ public class ActivityEditDto {
     @NotNull
     private Long clubid;
 
+
 }

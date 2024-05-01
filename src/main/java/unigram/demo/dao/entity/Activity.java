@@ -46,6 +46,8 @@ public class Activity {
     @Column(name = "usersId")
     List<Long> usersId;
 
+    @Column(name = "image_id")
+    private Long imageId;
 
     String photoUrl;
 

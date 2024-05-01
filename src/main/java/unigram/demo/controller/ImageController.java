@@ -16,16 +16,50 @@ public class ImageController {
     @Autowired
     private ImageServiceImpl service;
 
-    @PostMapping
-    public ResponseEntity<?> uploadImage(@RequestParam("image") MultipartFile file) throws IOException {
-        String uploadImage = service.uploadImage(file);
+    @PostMapping("/{clubid}")
+    public ResponseEntity<?> uploadImage(@RequestParam("image") MultipartFile file ,@PathVariable(value = "clubid", required = true) Long clubid) throws IOException {
+        System.out.println("Club id : " +clubid);
+        String uploadImage = service.uploadImage(file,clubid);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(uploadImage);
     }
 
-    @GetMapping("/{fileName}")
-    public ResponseEntity<?> downloadImage(@PathVariable String fileName){
-        byte[] imageData=service.downloadImage(fileName);
+    @GetMapping("/{clubid}")
+    public ResponseEntity<?> downloadImage(@PathVariable(value = "clubid", required = true) Long clubid){
+        byte[] imageData=service.downloadClubImage(clubid);
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.valueOf("image/png"))
+                .body(imageData);
+
+    }
+
+    @PostMapping("/activity/{activityId}")
+    public ResponseEntity<?> uploadImageActivity(@RequestParam("image") MultipartFile file ,@PathVariable(value = "activityId", required = true) Long activityid) throws IOException {
+
+        String uploadImage = service.uploadImageActivity(file,activityid);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(uploadImage);
+    }
+
+    @GetMapping("/activity/{activityId}")
+    public ResponseEntity<?> downloadImageActivity(@PathVariable(value = "activityId", required = true) Long activityid){
+        byte[] imageData=service.downloadActivityImage(activityid);
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.valueOf("image/png"))
+                .body(imageData);
+
+    }
+    @PostMapping("/announcement/{announcementId}")
+    public ResponseEntity<?> uploadImageAnnouncement(@RequestParam("image") MultipartFile file ,@PathVariable(value = "announcementId", required = true) Long announcementid) throws IOException {
+
+        String uploadImage = service.uploadImageAnnouncement(file,announcementid);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(uploadImage);
+    }
+
+    @GetMapping("/announcement/{announcementId}")
+    public ResponseEntity<?> downloadImageAnnouncement(@PathVariable(value = "announcementId", required = true) Long announcementid){
+        byte[] imageData=service.downloadAnnouncementImage(announcementid);
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.valueOf("image/png"))
                 .body(imageData);
