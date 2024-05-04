@@ -44,5 +44,7 @@ public class Club {
 
     @Column(name = "image_id")
     private Long imageId;
+    @Column(name = "base_image")
+    private Long baseId;
 
 }

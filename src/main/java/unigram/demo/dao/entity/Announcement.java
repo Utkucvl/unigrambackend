@@ -28,6 +28,8 @@ public class Announcement {
     private String photoUrl;
     @Column(name = "image_id")
     private Long imageId;
+    @Column(name = "base_image")
+    private Long baseId;
 
     @Temporal(TemporalType.DATE) // Specify the temporal type
     @Column(name = "AnnouncementDate")

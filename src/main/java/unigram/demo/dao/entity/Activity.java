@@ -50,6 +50,8 @@ public class Activity {
     private Long imageId;
 
     String photoUrl;
+    @Column(name = "base_image")
+    private Long baseId;
 
 
 }
