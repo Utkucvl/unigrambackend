@@ -77,6 +77,8 @@ public class ActivityServiceImpl implements ActivityService {
         return dto;
     }
 
+
+
     @Override
     public List<ActivityDto> getPastActivities() {
         LocalDate today = LocalDate.now();

@@ -90,7 +90,8 @@ public class BaseImageController {
     }
     @GetMapping("/activity/{activityId}")
     public ResponseEntity<ImageDto> getActivityImageById(@PathVariable Long activityId) {
-        ImageDto image = imageService.downloadAnnouncementImage(activityId);
+
+        ImageDto image = imageService.downloadActivityImage(activityId);
         if (image == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -98,7 +99,7 @@ public class BaseImageController {
     }
     @GetMapping("/club/{clubId}")
     public ResponseEntity<ImageDto> getClubImageById(@PathVariable Long clubId) {
-        ImageDto image = imageService.downloadAnnouncementImage(clubId);
+        ImageDto image = imageService.downloadClubImage(clubId);
         if (image == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

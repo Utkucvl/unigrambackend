@@ -1,5 +1,6 @@
 package unigram.demo.controller;
 
+import unigram.demo.dao.entity.Activity;
 import unigram.demo.dto.*;
 import unigram.demo.repository.ActivityRepository;
 import unigram.demo.service.impl.ActivityServiceImpl;
@@ -45,6 +46,7 @@ public class ActivityController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); //return 404, with null body
         }
     }
+
     @PostMapping
     public ResponseEntity<?> createActivity(@RequestBody ActivityEditDto activityDto) {
         try {

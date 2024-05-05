@@ -172,15 +172,12 @@ public class BaseImageServiceImpl implements BaseImageService {
     @Override
     public ImageDto downloadActivityImage(Long activityId) {
         // Club ID'sine göre kulübü bul
-        Optional<Activity> optionalActivity = activityRepository.findById(activityId);
+        System.out.println(activityId);
+        Activity activity = activityRepository.getOne(activityId);
 
         // Kulübü bulamazsanız veya kulübün image_id'si null ise hata işle
-        if (!optionalActivity.isPresent() || optionalActivity.get().getBaseId() == null) {
-            throw new NoSuchElementException("Image not found for announcement with ID: " + activityId);
-        }
 
-        // Kulübü alın
-        Activity activity = optionalActivity.get();
+
 
         // Kulübün image_id'sini kullanarak resmi bul
         Optional<Image> optionalImage = imageRepository.findById(activity.getBaseId());
