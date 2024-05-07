@@ -104,6 +104,11 @@ public class ActivityServiceImpl implements ActivityService {
                 .collect(Collectors.toList());
         return activitiesToDtoList(availableActivities);
     }
+    @Override
+    public List<ActivityDto> getAllActivities() {
+        List<Activity> data = activityRepository.findAll();
+        return activitiesToDtoList(data);
+    }
 
     @Override
     public Boolean delete(Long id) {

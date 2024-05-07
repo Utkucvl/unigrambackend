@@ -34,6 +34,12 @@ public class ActivityController {
         data = activityServiceImpl.getPastActivities();
         return ResponseEntity.ok(data);
     }
+    @GetMapping("/all")
+    public ResponseEntity<List<ActivityDto>> getAllActivites() {
+        List<ActivityDto> data= new ArrayList<>();
+        data = activityServiceImpl.getAllActivities();
+        return ResponseEntity.ok(data);
+    }
 
 
     @GetMapping("/{activityid}")
