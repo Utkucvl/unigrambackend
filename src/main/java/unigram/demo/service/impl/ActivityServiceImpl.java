@@ -96,6 +96,34 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
+    public List<ActivityDto> getJoinedPastActivites(Long userId) {
+        LocalDate today = LocalDate.now();
+
+        // Tüm aktiviteleri al
+        List<Activity> allActivities = activityRepository.findAll();
+
+        // Bugünün tarihinden önceki aktiviteleri filtrele
+        List<Activity> pastActivities = allActivities.stream()
+                .filter(activity -> activity.getDate().isBefore(today))
+                .collect(Collectors.toList());
+
+        // Past Activities'i DTO'ya dönüştür
+        List<ActivityDto> pastActivitiesDto = activitiesToDtoList(pastActivities);
+
+        // Filtrelenmiş olanları al
+        List<ActivityDto> filteredOnesDto = getFilteredForPast(userId);
+
+        // Past Activities ve filteredOnesDto arasında eşleşenleri bul
+        List<ActivityDto> matchedDtos = pastActivitiesDto.stream()
+                .filter(pastDto -> filteredOnesDto.stream()
+                        .anyMatch(filteredDto -> filteredDto.getId() == pastDto.getId()))
+                .collect(Collectors.toList());
+
+        return matchedDtos;
+    }
+
+
+    @Override
     public List<ActivityDto> getActivities() {
         LocalDate today = LocalDate.now();
         List<Activity> data = activityRepository.findAll();
@@ -211,6 +239,30 @@ public class ActivityServiceImpl implements ActivityService {
             // Örneğin, uygun bir hata durumu oluşturabilir ve bu hata durumunu döndürebilirsiniz.
             throw new IllegalArgumentException("Kullanıcı bulunamadı: " + userId);
         }
+        LocalDate today = LocalDate.now();
+        List<Activity> dataa = activityRepository.findAll();
+        List<Activity> data = dataa.stream()
+                .filter(activity -> activity.getDate().isAfter(today) || activity.getDate().isEqual(today))
+                .collect(Collectors.toList());
+
+        List<Activity> filtered = data.stream()
+                .filter(activity -> activity.getUsersId().contains(userId))
+                .collect(Collectors.toList());
+
+
+        List<ActivityDto> activityDtos = activitiesToDtoList(filtered);
+
+        return activityDtos;
+    }
+    @Override
+    public List<ActivityDto> getFilteredForPast(Long userId) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (!optionalUser.isPresent()) {
+            // Kullanıcı bulunamadı, hata fırlat veya uygun bir işlem yap
+            // Burada bir hata fırlatmak yerine uygun bir işlem yapabilirsiniz.
+            // Örneğin, uygun bir hata durumu oluşturabilir ve bu hata durumunu döndürebilirsiniz.
+            throw new IllegalArgumentException("Kullanıcı bulunamadı: " + userId);
+        }
         List<Activity> data = activityRepository.findAll();
 
         List<Activity> filtered = data.stream()
@@ -223,7 +275,8 @@ public class ActivityServiceImpl implements ActivityService {
         return activityDtos;
     }
 
-        public List<ActivityDto> activitiesToDtoList(List<Activity> activities) {
+
+    public List<ActivityDto> activitiesToDtoList(List<Activity> activities) {
         List<ActivityDto> dtos = new ArrayList<>();
 
         for (Activity activity : activities) {

@@ -14,6 +14,8 @@ public interface ActivityService {
     List<ActivityDto> getActivities();
     List<ActivityDto> getAllActivities();
 
+    List<ActivityDto> getJoinedPastActivites(Long userId);
+
     List<ActivityDto> getPastActivities();
 
     Boolean delete(Long id);
@@ -25,5 +27,6 @@ public interface ActivityService {
     ActivityDto removeUserFromActivity(Long userId, Long activityId);
 
     List<ActivityDto> getFiltered(Long userId);
+    List<ActivityDto> getFilteredForPast(Long userId);
 
 }

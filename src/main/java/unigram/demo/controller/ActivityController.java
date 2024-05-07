@@ -139,5 +139,12 @@ public class ActivityController {
         data = activityServiceImpl.getFiltered(userid);
         return ResponseEntity.ok(data);
     }
+    @GetMapping("/filterpast/{userid}")
+    public ResponseEntity<List<ActivityDto>> getAllPastJoinedActivityByUserId(@PathVariable(value = "userid", required = true) Long userid) {
+        List<ActivityDto> data= new ArrayList<>();
+        if(userid != null)
+            data = activityServiceImpl.getJoinedPastActivites(userid);
+        return ResponseEntity.ok(data);
+    }
 
 }
