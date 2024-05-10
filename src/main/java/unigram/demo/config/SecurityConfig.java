@@ -107,11 +107,13 @@ public class SecurityConfig {
                 .exceptionHandling(handler->handler.authenticationEntryPoint(unauthorizedHandler))
                 .authorizeRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/club/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/announcement/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/activity/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/baseimage/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/baseimage/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/baseimage/club/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/baseimage/club/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/baseimage/announcement/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/baseimage/activity/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/baseimage/club/**").permitAll()

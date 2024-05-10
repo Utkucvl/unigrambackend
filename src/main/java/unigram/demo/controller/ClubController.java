@@ -55,16 +55,16 @@ public class ClubController {
     }
 
     @PutMapping("/{clubid}")
-    public ResponseEntity<ClubDto> updateTestplan(@PathVariable(value = "clubid", required = true) Long clubid,
-                                                       @RequestBody ClubDto clubDto) {
+    public ResponseEntity<ClubDto> updateTestplan(@PathVariable(value = "clubid") Long clubid,
+                                                  @RequestBody ClubDto clubDto) {
         try {
             clubServiceImpl.update(clubid, clubDto);
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
-
     }
+
 
     @DeleteMapping("/{clubid}")
     public ResponseEntity<?> delete(@PathVariable(value = "clubid", required = true) Long clubid) {
@@ -120,13 +120,10 @@ public class ClubController {
         }
 
     }
-    @GetMapping("/filter")
-    public ResponseEntity<List<ClubDto>> getAllByUserId(@RequestBody ClubByUserDto clubByUserDto) {
+    @GetMapping("/filter/{userId}")
+    public ResponseEntity<List<ClubDto>> getAllByUserId(@PathVariable(value = "userId", required = true) Long userId) {
         List<ClubDto> data= new ArrayList<>();
-        data = clubServiceImpl.getFiltered(clubByUserDto.getUserId()); // hata burda
+        data = clubServiceImpl.getFiltered(userId); //
         return ResponseEntity.ok(data);
     }
-
-
-
 }
