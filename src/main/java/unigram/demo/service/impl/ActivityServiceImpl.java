@@ -132,6 +132,13 @@ public class ActivityServiceImpl implements ActivityService {
                 .collect(Collectors.toList());
         return activitiesToDtoList(availableActivities);
     }
+
+    @Override
+    public List<ActivityDto> getActivitiesByClubId(Long id) {
+        Club p = clubRepository.getReferenceById(id);
+        return activitiesToDtoList(p.getActivities());
+    }
+
     @Override
     public List<ActivityDto> getAllActivities() {
         List<Activity> data = activityRepository.findAll();

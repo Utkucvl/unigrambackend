@@ -34,6 +34,12 @@ public class ActivityController {
         data = activityServiceImpl.getPastActivities();
         return ResponseEntity.ok(data);
     }
+    @GetMapping("/byclub/{clubid}")
+    public ResponseEntity<List<ActivityDto>> getActivitiesByClubId(@PathVariable(value = "clubid", required = true) Long clubid) {
+        List<ActivityDto> data= new ArrayList<>();
+        data = activityServiceImpl.getActivitiesByClubId(clubid);
+        return ResponseEntity.ok(data);
+    }
     @GetMapping("/all")
     public ResponseEntity<List<ActivityDto>> getAllActivites() {
         List<ActivityDto> data= new ArrayList<>();

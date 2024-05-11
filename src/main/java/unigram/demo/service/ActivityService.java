@@ -12,6 +12,7 @@ public interface ActivityService {
     ActivityDto getById(Long id);
 
     List<ActivityDto> getActivities();
+    List<ActivityDto> getActivitiesByClubId(Long id);
     List<ActivityDto> getAllActivities();
 
     List<ActivityDto> getJoinedPastActivites(Long userId);
